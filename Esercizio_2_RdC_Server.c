@@ -118,7 +118,7 @@ int ServerSocket;
   struct sockaddr_in cad; //definizione della struct per l'indirizzo client
 	int ClientSocket; //descrittore socket dedicata
 	int clientLen; //dimensione indirizzo client
-	printf( "Waiting for a client to connect...");
+	printf( "In attesa del Client...");
 
 	while(1){
 
@@ -139,7 +139,7 @@ int ServerSocket;
 
 
 
-		char msgConn[] = "Connessione avvenuta";
+		char msgConn[] = "\n***Connessione avvenuta***\n";
 		//invio stringa di conferma della connessione
 				if(send(ClientSocket, msgConn, strlen(msgConn), 0) != strlen(msgConn)) {
 					ErrorHandler("Messaggio non inviato.\n");
@@ -161,9 +161,9 @@ int ServerSocket;
 						return -1;
 							}
 					else{
-						printf("Messaggio ricevuto dal Client %s:\n %s\n",inet_ntoa(cad.sin_addr), msg1);
+						printf("\nMessaggio ricevuto dal Client %s: '%s'\n",inet_ntoa(cad.sin_addr), msg1);
 						}
-
+					ClearArray(msg1, BUFF);
 
 					char ack[BUFF]="ack";
 					if(send(ClientSocket, ack, strlen(ack), 0) != strlen(ack)) {
@@ -172,6 +172,43 @@ int ServerSocket;
 										ClearWinSock();
 										return -1;
 									}
+
+					char s1[BUFF];
+
+
+					if(recv(ClientSocket, s1, BUFF-1, 0) <= 0) {
+											ErrorHandler("Messaggio non ricevuto.\n");
+											closesocket(ServerSocket);
+											ClearWinSock();
+											return -1;
+												}
+
+					char s2[BUFF];
+					if(recv(ClientSocket, s2, BUFF-1, 0) <= 0) {
+										ErrorHandler("Messaggio non ricevuto.\n");
+										closesocket(ServerSocket);
+										ClearWinSock();
+										return -1;
+											}
+
+					int n1 = atoi(s1);
+					int n2 = atoi(s2);
+					int res = n1+n2;
+
+					printf("\nLa somma di %d + %d == %d \n",n1,n2,res);
+
+					char sres[BUFF];
+					sprintf(sres, "%d", res);
+
+					if(send(ClientSocket, sres, strlen(sres), 0) != strlen(sres)) {
+															ErrorHandler("Messaggio non inviato.\n");
+															closesocket(ServerSocket);
+															ClearWinSock();
+															return -1;
+														}
+
+
+
 
 
 

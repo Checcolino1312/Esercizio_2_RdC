@@ -78,7 +78,7 @@ int ClientSocket;
   puts("Inserisci IP server (127.0.0.1)\n");
   gets(server);
   fflush(stdin);
-  puts("Inserisci porta (27015)\n");
+  puts("\nInserisci porta (27015)\n");
   scanf("%d", &porta);
 
 
@@ -120,9 +120,9 @@ int flag_chiusura = 1; //flag che gestisce il caso di chiusura della comunicazio
 
 	while(flag_chiusura) {
 
-		printf("Inviato messaggio al server\n");
+
 		char msg1[BUFFERSIZE]="Hello";
-		puts(msg1);
+
 
 
 					if(send(ClientSocket, msg1, strlen(msg1), 0) != strlen(msg1))
@@ -143,8 +143,48 @@ int flag_chiusura = 1; //flag che gestisce il caso di chiusura della comunicazio
 									ClearWinSock();
 									return -1;
 								}
-				printf("Messaggio ricevuto dal Server\n:");
-				puts(msg1);
+				printf("Messaggio ricevuto dal Server: '%s'\n\n", msg1);
+				ClearArray(msg1, BUFFERSIZE);
+
+				int n1,n2;
+				printf("Inserisci numero:\n");
+				scanf("%d", &n1);
+				printf("Inserisci numero:\n");
+				scanf("%d", &n2);
+
+				char s1[BUFFERSIZE];
+				char s2[BUFFERSIZE];
+
+				sprintf(s1, "%d", n1);
+				sprintf(s2, "%d", n2);
+
+				if(send(ClientSocket, s1, strlen(s1), 0) != strlen(s1))
+									{
+										ErrorHandler("Messaggio non inviato");
+										closesocket(ClientSocket);
+										ClearWinSock();
+										return -1;
+									}
+				if(send(ClientSocket, s2, strlen(s2), 0) != strlen(s2))
+													{
+														ErrorHandler("Messaggio non inviato");
+														closesocket(ClientSocket);
+														ClearWinSock();
+														return -1;
+													}
+
+				char res[BUFFERSIZE];
+				if(recv(ClientSocket, res, BUFFERSIZE-1, 0) <=0 ) {
+
+													ErrorHandler("Messaggio non ricevuto1");
+													closesocket(ClientSocket);
+													ClearWinSock();
+													return -1;
+												}
+				else{
+					printf("\nRES == ** %s **\n",res);
+					system("pause");
+				}
 
 
 	}
