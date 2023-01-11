@@ -183,7 +183,7 @@ int flag_chiusura = 1; //flag che gestisce il caso di chiusura della comunicazio
 												}
 				else{
 					printf("\nRES == ** %s **\n",res);
-					system("pause");
+					break;
 				}
 
 
